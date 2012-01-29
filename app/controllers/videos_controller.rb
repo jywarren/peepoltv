@@ -13,13 +13,27 @@ class VideosController < ApplicationController
 	end
 
 	def create
-		@video = Video.new(params[:video])
-		@video.save
-		params[:tags].split(',').each do |tag|
-			tag = Tag.new({:video_id => @video.id,:name => tag})
-			tag.save
+		if params[:location] == ''
+			@video = Video.new
+			@video.errors.add :location, 'You must name a location. You may also enter a latitude and longitude instead.'
+			new
+			render :action => "new", :controller => "videos"
+		else 
+			begin
+				location = GeoKit::GeoLoc.geocode(params[:location])
+				@video = Video.new(params[:video])
+				@video.latitude = location.lat
+				@video.longitude = location.lon
+			rescue
+				@video = Video.new(params[:video])
+			end
+			@video.save
+			params[:tags].split(',').each do |tag|
+				tag = Tag.new({:video_id => @video.id,:name => tag})
+				tag.save
+			end
+			redirect_to "/videos/"
 		end
-		redirect_to "/videos/"
 	end
 
 	def bounds
@@ -32,6 +46,15 @@ class VideosController < ApplicationController
 			format.json  { render :json => @videos }
 		end
 
+	end
+
+	def geolocate
+		#begin
+			@location = GeoKit::GeoLoc.geocode(params[:q])
+			render :layout => false
+		#rescue
+		#	render :text => "No results"
+		#end
 	end
 
 end

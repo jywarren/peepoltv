@@ -1,6 +1,6 @@
-<h2>List your live stream</h2>
+<h2>Add your live stream:</h2>
 
-
+<%= error_messages_for 'video' %> 
 
 <form action="/videos/create">
 	<label for="video[title]">Title</label><br />
@@ -11,10 +11,52 @@
 	<input name="video[author]" type="text" /><br />
 	<label for="video[embedcode]">Embed code (UStream...)</label><br />
 	<input name="video[embedcode]" type="text" /><br />
-	<label for="video[latitude]">Latitude</label><br />
-	<input name="video[latitude]" type="text" /><br />
-	<label for="video[longitude]">Longitude</label><br />
-	<input name="video[longitude]" type="text" /><br />
+
+	<label for="video[location]">Location</label><br />
+	<input class="text" type="text" name="location" value="<%= params[:location] || 'Paris, France' %>" id="location"><br />
+	<div id="geocode_results">
+	</div>
+
+	<div style="font-size:0.8em;padding:20px;">
+		<label for="video[latitude]">Latitude</label><br />
+		<input name="video[latitude]" type="text" /><br />
+		<label for="video[longitude]">Longitude</label><br />
+		<input name="video[longitude]" type="text" /><br />
+	</div>
+
 	<input type="submit" value="Save" />
 </form>
 
+<script>
+/* JQuery search as you type
+* Overrides the action and method of the form
+*
+*/
+$().ready(function() {
+	$("#location").autocomplete("/videos/geolocate",
+		{ cacheLength:1, multiple:false, minchars:1, mustMatch:false,
+		highlight:false,
+		formatItem: function(x) {
+			return x[0];
+		},
+		formatResult: function(x) {
+			if(x[1]) {
+				//real object, with a url field
+				return x[0];
+			} else {
+				//a header, return null character
+				return "\0";
+			}
+		}
+	});
+	$("#location").result(function(event, data, formatted) {
+		if (data == 'No results'){ 
+	
+		} else {
+			$("#location").attr('value',data);
+		}
+	});
+});
+
+</script>
+ 
