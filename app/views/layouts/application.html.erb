@@ -8,6 +8,19 @@
 </head>
 <body>
 
+<div id="header">
+	<h1><a href="/">Peepl.tv</a></h1>
+
+	<div class="right">
+		<form action="/videos/search">
+			<input type="text" name="q" />
+			<input type="submit" value="Search" />
+		</form>
+	
+		<a href="/videos/new">New video [+]</a>
+	</div>
+</div>
+
 <%= yield %>
 
 </body>

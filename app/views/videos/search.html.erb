@@ -2,13 +2,12 @@
 
 <form action="/videos/search">
 
-	<input type="text" name="q" />
+	<input type="text" name="q" value="<%= params[:q] %>" />
 	<input type="submit" value="Search" />
 
 </form>
 
 <a href="/videos/new">New video [+]</a>
 
-<h2>MAP HERE</h2>
-
+<%= render :partial => "map" %>
 <%= render :partial => "videos" %>

@@ -22,4 +22,16 @@ class VideosController < ApplicationController
 		redirect_to "/videos/"
 	end
 
+	def bounds
+		maxlat,minlat,maxlon,minlon = params[:bbox].split(",")
+		@videos = Video.find(:all,:conditions => ['latitude < ? AND latitude > ? AND longitude < ? AND longitude > ?',maxlat,minlat,maxlon,minlon])
+		
+		respond_to do |format|
+			format.html { render :template => "videos/search" }
+			format.xml  { render :xml => @videos }
+			format.json  { render :json => @videos }
+		end
+
+	end
+
 end

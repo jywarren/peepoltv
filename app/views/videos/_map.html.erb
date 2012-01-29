@@ -1,0 +1,71 @@
+<script type="text/javascript" src="http://openlayers.org/api/2.9/OpenLayers.js"></script>
+<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAANO6Yx8ihhesSqnPHx9a3RxQCA0kQZc0rHxnaN3mazoBpOqX1oBQwLut2gk7rd_T9sYyxcGJrxQK3gg' type='text/javascript'></script> 
+
+<div id="map"></div>
+
+<script>
+// /videos/bounds/search.json?bbox=50,-80,-50,-90
+
+var sw_lon = -180;
+var sw_lat = -50;
+var ne_lon = 180;
+var ne_lat = 70;
+
+var cen_lon = (sw_lon+ne_lon)/2
+var cen_lat = (sw_lat+ne_lat)/2
+
+var map;
+var mapBounds = new OpenLayers.Bounds(sw_lon,sw_lat,ne_lon,ne_lat)
+var mapMinZoom = 12;
+var mapMaxZoom = 22;
+
+var spher_merc = new OpenLayers.Projection("EPSG:4326")
+var latlon = new OpenLayers.Projection("EPSG:900913")
+       
+// avoid pink tiles
+OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+OpenLayers.Util.onImageLoadErrorColor = "transparent";
+
+OpenLayers.theme = '/map-styles/dark/style.css';
+OpenLayers.ImgPath = '/map-styles/dark/';
+// http://mapbox.github.com/webintegration
+
+map = new OpenLayers.Map('map', { //controls: [], 
+	tileOrigin: new OpenLayers.LonLat(0,0).transform(latlon,spher_merc),
+	units: "m",
+	//theme: "/theme/mapmill.css",
+	projection: spher_merc,
+	displayProjection: latlon, 
+	maxExtent: new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508.34),//mapBounds,
+	maxResolution: 156543.0339,
+});
+
+var osm = new OpenLayers.Layer.TMS( "OpenStreetMap",
+	"http://tile.openstreetmap.org/",
+	{ type: 'png', getURL: osm_getTileURL, displayOutsideMaxExtent: true, attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'} );
+map.addLayer(osm);
+
+map.zoomToExtent( mapBounds.transform(spher_merc,latlon ) );
+
+map.events.register("zoomend", map, function() {
+	console.log("zoomend");
+})
+
+function osm_getTileURL(bounds) {
+	var res = this.map.getResolution();
+	var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+	var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+	var z = this.map.getZoom();
+	var limit = Math.pow(2, z);
+
+	if (y < 0 || y >= limit) {
+		return "http://publiclaboratory.org/map-styles/none.png";
+	} else {
+		x = ((x % limit) + limit) % limit;
+		return this.url + z + "/" + x + "/" + y + "." + this.type;
+	}
+}
+
+
+</script>
+
