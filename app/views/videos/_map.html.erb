@@ -47,11 +47,39 @@ map.addLayer(osm);
 
 map.zoomToExtent( mapBounds.transform(spher_merc,latlon ) );
 
-map.events.register("zoomend", map, function() {
-	console.log("zoomend");
-	//mapBounds
-	// "/videos/bounds?bbox="+maxlon+","
-})
+map.events.register("zoomend", map, refreshVideos) 
+map.events.register("moveend", map, refreshVideos) 
+
+var markers = new OpenLayers.Layer.Markers( "Markers" );
+map.addLayer(markers);
+
+var size = new OpenLayers.Size(21,25);
+var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png',size,offset);
+
+function refreshVideos() {
+
+	extent = map.getExtent().transform(latlon,spher_merc)
+	maxlon = extent.right
+	minlon = extent.left
+	maxlat = extent.top
+	minlat = extent.bottom
+
+	$.ajaxSetup ({
+		cache: false
+	});
+	var ajax_load = "<img src='images/spinner-small.gif' alt='loading...' />";
+
+	var loadUrl = "/videos/bounds?bbox="+maxlat+","+minlat+","+maxlon+","+minlon;
+	//$("#load_basic").click(function(){
+		$("#videos").html(ajax_load).load(loadUrl);
+	//});
+
+	markers.destroy()
+	markers = new OpenLayers.Layer.Markers( "Markers" );
+	map.addLayer(markers);
+
+}
 
 function osm_getTileURL(bounds) {
 	var res = this.map.getResolution();

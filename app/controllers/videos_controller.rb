@@ -22,6 +22,7 @@ class VideosController < ApplicationController
 			begin
 				location = GeoKit::GeoLoc.geocode(params[:location])
 				@video = Video.new(params[:video])
+				@video.location = params[:location]
 				@video.latitude = location.lat
 				@video.longitude = location.lon
 			rescue
@@ -38,10 +39,10 @@ class VideosController < ApplicationController
 
 	def bounds
 		maxlat,minlat,maxlon,minlon = params[:bbox].split(",")
-		@videos = Video.find(:all,:conditions => ['latitude < ? AND latitude > ? AND longitude < ? AND longitude > ?',maxlat,minlat,maxlon,minlon])
+		@videos = Video.find(:all,:conditions => ['latitude < ? AND latitude > ? AND longitude < ? AND longitude > ?',maxlat,minlat,maxlon,minlon], :limit => 30, :order => "created_at DESC")
 		
 		respond_to do |format|
-			format.html { render :template => "videos/search" }
+			format.html { render :partial => "videos" }
 			format.xml  { render :xml => @videos }
 			format.json  { render :json => @videos }
 		end

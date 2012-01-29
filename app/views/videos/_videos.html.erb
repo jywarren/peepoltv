@@ -2,8 +2,18 @@
 <% @videos.each do |video| %>
 	<div class="video">
 		<h3><%= video.title %></h3>
-		<p>by <em><%= video.author %></em></p>
+		<p>by <em><%= video.author %> in <%= video.location %></em></p>
 		<%= raw video.embedcode %>
+		<script>
+			//markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon));
+			marker_<%= video.id %> = new OpenLayers.Marker(new OpenLayers.LonLat(<%= video.longitude %>,<%= video.latitude %>).transform(spher_merc,latlon),icon.clone());
+			//marker.setOpacity(0.2);
+			marker_<%= video.id %>.events.register('mousedown', marker_<%= video.id %>, function(evt) { 
+				// do something on click
+				OpenLayers.Event.stop(evt); 
+			});
+			markers.addMarker(marker_<%= video.id %>); 
+		</script>
 	</div>
 <% end %>
 </div>
