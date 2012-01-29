@@ -1,7 +1,7 @@
 class VideosController < ApplicationController
 
 	def index
-		@videos = Video.find :all
+		@videos = Video.find(:all, :limit => 30, :order => "created_at DESC")
 	end
 
 	def new

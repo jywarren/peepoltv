@@ -2,7 +2,8 @@
 <% @videos.each do |video| %>
 	<div class="video">
 		<h3><%= video.title %></h3>
-		<%= video.embedcode %>
+		<p>by <em><%= video.author %></em></p>
+		<%= raw video.embedcode %>
 	</div>
 <% end %>
 </div>

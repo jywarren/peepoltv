@@ -1,3 +1,6 @@
+html {
+	font-family:georgia, serif;
+}
 body {
 	margin:0;
 }
@@ -23,10 +26,14 @@ body {
 }
 .video {
 	float:left;
-	width:240px;
+	width:360px;
 	border:3px solid #ccc;
 	margin-right:8px;
 	margin-bottom:8px;
+	padding:8px;
+}
+.video h3 {
+	margin-top:0;
 }
 
 #map {

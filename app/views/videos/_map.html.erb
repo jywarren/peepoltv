@@ -49,6 +49,8 @@ map.zoomToExtent( mapBounds.transform(spher_merc,latlon ) );
 
 map.events.register("zoomend", map, function() {
 	console.log("zoomend");
+	//mapBounds
+	// "/videos/bounds?bbox="+maxlon+","
 })
 
 function osm_getTileURL(bounds) {
