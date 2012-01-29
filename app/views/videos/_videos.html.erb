@@ -1,0 +1,8 @@
+<div id="videos">
+<% @videos.each do |video| %>
+	<div class="video">
+		<h3><%= video.title %></h3>
+		<%= video.embedcode %>
+	</div>
+<% end %>
+</div>
