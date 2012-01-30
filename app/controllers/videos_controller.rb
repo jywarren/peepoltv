@@ -19,21 +19,24 @@ class VideosController < ApplicationController
 			new
 			render :action => "new", :controller => "videos"
 		else 
+			@video = Video.new(params[:video])
+			@video.location = params[:location]
 			begin
 				location = GeoKit::GeoLoc.geocode(params[:location])
-				@video = Video.new(params[:video])
-				@video.location = params[:location]
 				@video.latitude = location.lat
-				@video.longitude = location.lon
+				@video.longitude = location.lng
 			rescue
-				@video = Video.new(params[:video])
+				@video.errors.add :location, 'Unable to find that location. You may also enter a latitude and longitude manually.'
 			end
-			@video.save
-			params[:tags].split(',').each do |tag|
-				tag = Tag.new({:video_id => @video.id,:name => tag})
-				tag.save
+			if @video.save
+				params[:tags].split(',').each do |tag|
+					tag = Tag.new({:video_id => @video.id,:name => tag})
+					tag.save
+				end
+				redirect_to "/videos/"
+			else
+				redirect_to "/videos/new"
 			end
-			redirect_to "/videos/"
 		end
 	end
 
