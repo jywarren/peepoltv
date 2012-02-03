@@ -10,14 +10,6 @@ o888o                          o888o
 
 =============================================================
 
-TODO:
+Soon see it live at peepltv.org
 
-- validations for video submissions
-	- check that embed codes are actually embed codes (regex?)
-- search by lat/lon
-- add map, click to initiate AJAX search from that lat/lon
-- admin/banning
-- distinguish between live streams and non-live (How?)
-- make pretty
-- "add to viewer" for videos so you can start watching some of them in a "tray"
 
