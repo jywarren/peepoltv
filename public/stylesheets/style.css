@@ -41,3 +41,6 @@ body {
 	height:400px;
 }
 
+#footer {
+	clear:both;
+}
